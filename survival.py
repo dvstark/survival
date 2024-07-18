@@ -118,6 +118,30 @@ def ats_fit(xvar,yvar,ylim,fmt='(I4, 2F10.3)'):
 
 def kaplan_meier(var,ylim):
     
+    '''Runs the kaplan meier estimator to determine the CDF of the input data
+    
+    Input:
+
+    var : array-like
+        variable of interest
+    ylim: array-like bool
+        boolean array indicating if the corresponding y value is an upper limit
+    
+    Output:
+    
+    out: dict
+        A dictionary containing:
+            midpoint: where the CDF hits 0.5
+            l68: lower 1-sigma confidence interval on midpoint
+            h68: upper 1-sigma confidence interval on midpoint
+            km: another dictionary with the results:
+                x: the y variable value
+                surv: the resulting cd
+
+    
+    '''
+    
+
 
 
     tup = np.column_stack((ylim,var))
