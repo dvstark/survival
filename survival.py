@@ -70,7 +70,32 @@ def ats_fit(xvar,yvar,ylim,fmt='(I4, 2F10.3)'):
     
     '''Runs cenken from R (Alritas-Sen-Theil estimator) to determine
     correlation strength and line fit parameters in the presence of 
-    upper limits. This is essentially a wrapper for run_ats_r'''
+    upper limits. This is essentially a wrapper for run_ats_r
+    
+    Input:
+    xvar : array-like
+        The "x" variable
+    yvar: array-like
+        The "y" variable
+    ylim: bool
+        Flag indicating whether the corresponding y value is an upper limit
+    fmt: str
+        The format of the output data file that's sent to R. Just don't mess
+        with this unless you know what you're doing.
+
+    Output:
+    
+    out: dict
+        A dictionary containing the results of the fit:
+            slope = slope of fitted line
+            int = intercept of fitted line
+            tau = correlation coefficient
+            p = statistical significance of correlation (e.g. < 0.05 would be
+            significant at 2-sigma)
+            sigma_up = scatter above the fitted line
+            sigma_down = scatter below the fitted line
+    
+    '''
     
     tup = np.column_stack((ylim,xvar,yvar))
     header_line = ff.FortranRecordWriter(fmt)
