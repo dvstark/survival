@@ -1,11 +1,18 @@
 '''survival analysis routines...mostly R wrappers'''
 
-import rpy2.robjects as ro
+import os
+
 import numpy as np
+import rpy2.robjects as ro
 import fortranformat as ff
 from rpy2.robjects.packages import importr
 
 def setup():
+
+    '''Run this routine once to install the R packages needed for the
+    routines in this package. You may get a warning message about a library
+    not being writable, and an option to use a private library. Go ahead and say 
+    "yes" and this should all work'''
 
     # import standard packages
     utils = importr('utils')
@@ -17,9 +24,13 @@ def setup():
         utils.install_packages(p)
     
 
-def rfitter():
+def run_ats_r(datafile):
 
-    ro.r('tbl <- read.table("/Users/dstark/python_packages/my_packages/survival/rdata.dat", head=T, fill=T)')
+    '''
+    note: rename this to something 
+    '''
+
+    ro.r('tbl <- read.table("{}", head=T, fill=T)'.format(datafile))
     ro.r('dim(tbl) ; names(tbl) ; summary(tbl)')
               
     #read in various variables        
@@ -59,22 +70,24 @@ def ats_fit(xvar,yvar,ylim,fmt='(I4, 2F10.3)'):
     
     '''Runs cenken from R (Alritas-Sen-Theil estimator) to determine
     correlation strength and line fit parameters in the presence of 
-    upper limits. This is essentially a wrapper for rfitter'''
+    upper limits. This is essentially a wrapper for run_ats_r'''
     
     tup = np.column_stack((ylim,xvar,yvar))
     header_line = ff.FortranRecordWriter(fmt)
     line = ff.FortranRecordWriter(fmt)
 
-    pfile=open('/Users/dstark/python_packages/my_packages/survival/rdata.dat','w')
+    datafile = os.getcwd + 'rdata.dat'
+
+    pfile=open(datafile,'w')
     pfile.write('lim xvar gs\n')
     for t in tup:
         line.write(t)
         pfile.write(line.write(t)+'\n')
     pfile.close()
-    out = rfitter()
+    out = run_ats_r(datafile)
     
     #make this into a dictionary
-    fit = {'slope':out[0],'intercept':out[1],'tau':out[2],'p':out[3],'sigma_out':out[4],'sigma_down':out[5]}
+    fit = {'slope':out[0],'intercept':out[1],'tau':out[2],'p':out[3],'sigma_up':out[4],'sigma_down':out[5]}
     
     return fit
 
