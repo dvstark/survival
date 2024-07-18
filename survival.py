@@ -101,7 +101,7 @@ def ats_fit(xvar,yvar,ylim,fmt='(I4, 2F10.3)'):
     header_line = ff.FortranRecordWriter(fmt)
     line = ff.FortranRecordWriter(fmt)
 
-    datafile = os.getcwd + 'rdata.dat'
+    datafile = os.getcwd() + 'rdata.dat'
 
     pfile=open(datafile,'w')
     pfile.write('lim xvar gs\n')
@@ -118,6 +118,8 @@ def ats_fit(xvar,yvar,ylim,fmt='(I4, 2F10.3)'):
 
 def kaplan_meier(var,ylim):
     
+
+
     tup = np.column_stack((ylim,var))
     header_line = ff.FortranRecordWriter('(I4, F10.3)')
     line = ff.FortranRecordWriter('(I4, F10.3)')
